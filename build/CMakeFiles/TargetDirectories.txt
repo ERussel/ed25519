@@ -1,0 +1,4 @@
+/Users/russel/Documents/Projects/Soramitsu/parity/libraries/ed25519-build/ed25519/build/CMakeFiles/install.dir
+/Users/russel/Documents/Projects/Soramitsu/parity/libraries/ed25519-build/ed25519/build/CMakeFiles/ed25519_sha2.dir
+/Users/russel/Documents/Projects/Soramitsu/parity/libraries/ed25519-build/ed25519/build/CMakeFiles/ALL_BUILD.dir
+/Users/russel/Documents/Projects/Soramitsu/parity/libraries/ed25519-build/ed25519/build/CMakeFiles/ZERO_CHECK.dir

@@ -10,7 +10,7 @@
  */
 
 #include "fixedint.h"
-#include "sha512.h"
+#include "sha2_512.h"
 
 /* the K array */
 static const uint64_t K[80] = {
@@ -88,7 +88,7 @@ static const uint64_t K[80] = {
 #endif
 
 /* compress 1024-bits */
-static int sha512_compress(sha512_context *md, unsigned char *buf)
+static int sha2_512_compress(sha2_512_context *md, unsigned char *buf)
 {
     uint64_t S[8], W[80], t0, t1;
     int i;
@@ -144,7 +144,7 @@ static int sha512_compress(sha512_context *md, unsigned char *buf)
    @param md   The hash state you wish to initialize
    @return 0 if successful
 */
-int sha512_init(sha512_context * md) {
+int sha2_512_init(sha2_512_context * md) {
     if (md == NULL) return 1;
 
     md->curlen = 0;
@@ -168,7 +168,7 @@ int sha512_init(sha512_context * md) {
    @param inlen  The length of the data (octets)
    @return 0 if successful
 */
-int sha512_update (sha512_context * md, const unsigned char *in, size_t inlen)               
+int sha2_512_update (sha2_512_context * md, const unsigned char *in, size_t inlen)               
 {                                                                                           
     size_t n;
     size_t i;                                                                        
@@ -180,7 +180,7 @@ int sha512_update (sha512_context * md, const unsigned char *in, size_t inlen)
     }                                                                                       
     while (inlen > 0) {                                                                     
         if (md->curlen == 0 && inlen >= 128) {                           
-           if ((err = sha512_compress (md, (unsigned char *)in)) != 0) {               
+           if ((err = sha2_512_compress (md, (unsigned char *)in)) != 0) {               
               return err;                                                                   
            }                                                                                
            md->length += 128 * 8;                                        
@@ -198,7 +198,7 @@ int sha512_update (sha512_context * md, const unsigned char *in, size_t inlen)
            in             += n;                                                             
            inlen          -= n;                                                             
            if (md->curlen == 128) {                                      
-              if ((err = sha512_compress (md, md->buf)) != 0) {            
+              if ((err = sha2_512_compress (md, md->buf)) != 0) {            
                  return err;                                                                
               }                                                                             
               md->length += 8*128;                                       
@@ -215,7 +215,7 @@ int sha512_update (sha512_context * md, const unsigned char *in, size_t inlen)
    @param out [out] The destination of the hash (64 bytes)
    @return 0 if successful
 */
-   int sha512_final(sha512_context * md, unsigned char *out)
+   int sha2_512_final(sha2_512_context * md, unsigned char *out)
    {
     int i;
 
@@ -240,7 +240,7 @@ int sha512_update (sha512_context * md, const unsigned char *in, size_t inlen)
         while (md->curlen < 128) {
             md->buf[md->curlen++] = (unsigned char)0;
         }
-        sha512_compress(md, md->buf);
+        sha2_512_compress(md, md->buf);
         md->curlen = 0;
     }
 
@@ -254,7 +254,7 @@ while (md->curlen < 120) {
 
     /* store length */
 STORE64H(md->length, md->buf+120);
-sha512_compress(md, md->buf);
+sha2_512_compress(md, md->buf);
 
     /* copy output */
 for (i = 0; i < 8; i++) {
@@ -264,12 +264,12 @@ for (i = 0; i < 8; i++) {
 return 0;
 }
 
-int sha512(const unsigned char *message, size_t message_len, unsigned char *out)
+int sha2_512(const unsigned char *message, size_t message_len, unsigned char *out)
 {
-    sha512_context ctx;
+    sha2_512_context ctx;
     int ret;
-    if ((ret = sha512_init(&ctx))) return ret;
-    if ((ret = sha512_update(&ctx, message, message_len))) return ret;
-    if ((ret = sha512_final(&ctx, out))) return ret;
+    if ((ret = sha2_512_init(&ctx))) return ret;
+    if ((ret = sha2_512_update(&ctx, message, message_len))) return ret;
+    if ((ret = sha2_512_final(&ctx, out))) return ret;
     return 0;
 }

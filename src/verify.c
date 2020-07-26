@@ -1,5 +1,5 @@
-#include "ed25519.h"
-#include "sha512.h"
+#include "ed25519_sha2.h"
+#include "sha2_512.h"
 #include "ge.h"
 #include "sc.h"
 
@@ -44,10 +44,10 @@ static int consttime_equal(const unsigned char *x, const unsigned char *y) {
     return !r;
 }
 
-int ed25519_verify(const unsigned char *signature, const unsigned char *message, size_t message_len, const unsigned char *public_key) {
+int ed25519_sha2_verify(const unsigned char *signature, const unsigned char *message, size_t message_len, const unsigned char *public_key) {
     unsigned char h[64];
     unsigned char checker[32];
-    sha512_context hash;
+    sha2_512_context hash;
     ge_p3 A;
     ge_p2 R;
 
@@ -59,11 +59,11 @@ int ed25519_verify(const unsigned char *signature, const unsigned char *message,
         return 0;
     }
 
-    sha512_init(&hash);
-    sha512_update(&hash, signature, 32);
-    sha512_update(&hash, public_key, 32);
-    sha512_update(&hash, message, message_len);
-    sha512_final(&hash, h);
+    sha2_512_init(&hash);
+    sha2_512_update(&hash, signature, 32);
+    sha2_512_update(&hash, public_key, 32);
+    sha2_512_update(&hash, message, message_len);
+    sha2_512_final(&hash, h);
     
     sc_reduce(h);
     ge_double_scalarmult_vartime(&R, h, &A, signature + 32);
